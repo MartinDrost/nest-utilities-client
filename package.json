@@ -1,0 +1,28 @@
+{
+  "name": "nest-utilities-client",
+  "version": "2.0.0",
+  "description": "Provides a generic HTTP service which interfaces with the nest-utilities package.",
+  "main": "distribution/index.js",
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "test": "npm run build",
+    "build": "tsc"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tslint": "5.20.1",
+    "typescript": "3.7.2"
+  },
+  "repository": "git+https://github.com/MartinDrost/nest-utilities-client.git",
+  "author": "MartinDrost",
+  "license": "ISC",
+  "bugs": "https://github.com/MartinDrost/nest-utilities-client/issues",
+  "homepage": "https://github.com/MartinDrost/nest-utilities-client#readme",
+  "keywords": [
+    "nestjs",
+    "restful",
+    "nest-utilities",
+    "http",
+    "typescript"
+  ]
+}
