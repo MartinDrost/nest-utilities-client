@@ -27,9 +27,8 @@ Out of the box the `CrudService` will supplement your extended class with a basi
 You can customize the HTTP service by creating a new class which extends the HTTP service offered by the package. In this new class you will be prompted to implement abstract methods which help you tailor the service with ease.
 
 ```Typescript
-import { HttpService, CrudService } from "nest-utilities-client";
+import { HttpService } from "nest-utilities-client";
 import { messageService } from "../services";
-import { IUser } from "../interfaces"
 
 class CustomHttpService extends HttpService {
   getHeaders() {
@@ -42,6 +41,13 @@ class CustomHttpService extends HttpService {
     messageService.notify(error.message);
   }
 }
+
+```
+
+```Typescript
+import { CrudService } from "nest-utilities-client";
+import { CustomHttpService } from "../services";
+import { IUser } from "../interfaces"
 
 class UserService extends CrudService<IUser> {
   constructor() {
