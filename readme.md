@@ -13,7 +13,7 @@ The package revolves around the `CrudService`. Extending this service will grant
 import { CrudService } from "nest-utilities-client";
 import { IUser } from "../interfaces"
 
-export class UserService extends CrudService<IUser> {
+class UserService extends CrudService<IUser> {
   constructor() {
     super("http://localhost:3000/users");
   }
@@ -27,10 +27,11 @@ Out of the box the `CrudService` will supplement your extended class with a basi
 You can customize the HTTP service by creating a new class which extends the HTTP service offered by the package. In this new class you will be prompted to implement abstract methods which help you tailor the service with ease.
 
 ```Typescript
-import { HttpService } from "nest-utilities-client";
+import { HttpService, CrudService } from "nest-utilities-client";
 import { messageService } from "../services";
+import { IUser } from "../interfaces"
 
-export class SimpleHttpService extends HttpService {
+class CustomHttpService extends HttpService {
   getHeaders() {
     return {
       "Authorization": localStorage.session
@@ -39,6 +40,12 @@ export class SimpleHttpService extends HttpService {
 
   onRequestError(error: Error) {
     messageService.notify(error.message);
+  }
+}
+
+class UserService extends CrudService<IUser> {
+  constructor() {
+    super("http://localhost:3000/users", new CustomHttpService());
   }
 }
 ```
