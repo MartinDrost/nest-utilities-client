@@ -1,5 +1,5 @@
 <p align="center">
-Provides an extension on your HTTP services which interfaces with the <a href="https://github.com/MartinDrost/nest-utilities">nest-utilities</a> package.
+Provides an extension on your HTTP services which interfaces with API's using the <a href="https://github.com/MartinDrost/nest-utilities">nest-utilities</a> package.
 </p>
 <p align="center">
   <a href="https://www.npmjs.com/package/nest-utilities-client"><img src="https://img.shields.io/npm/dt/nest-utilities-client.svg" alt="NPM Downloads" /></a>
