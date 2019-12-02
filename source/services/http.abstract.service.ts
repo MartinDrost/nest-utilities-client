@@ -9,12 +9,12 @@ export abstract class HttpService {
    * @param body
    * @param options
    */
-  private async fetch(
+  private async fetch<ResponseType = any>(
     method: string,
     url: string,
     body: any,
     options?: IHttpOptions
-  ): Promise<IResponse<any>> {
+  ): Promise<IResponse<ResponseType>> {
     // convert the httpOptions to query parameters
     const queryParams = optionsToParams(options || {}).join("&");
 
@@ -27,7 +27,7 @@ export abstract class HttpService {
 
     // construct and execute the request
     try {
-      const response: IResponse<any> = await fetch(
+      const response: IResponse<ResponseType> = await fetch(
         [url, queryParams].join("?"),
         {
           method,
@@ -42,6 +42,11 @@ export abstract class HttpService {
       // store the actual outcome in response.data
       response.data = await response.json();
 
+      // forward error responses
+      if (response.status >= 400) {
+        throw response;
+      }
+
       return response;
     } catch (error) {
       this.onRequestError(error);
@@ -55,7 +60,10 @@ export abstract class HttpService {
    * @param url
    * @param body
    */
-  post(url: string, body: any): Promise<IResponse<any>> {
+  post<ResponseType = any>(
+    url: string,
+    body: any
+  ): Promise<IResponse<ResponseType>> {
     return this.fetch("POST", url, body);
   }
 
@@ -64,7 +72,10 @@ export abstract class HttpService {
    * @param url
    * @param options
    */
-  get(url: string, options?: IHttpOptions): Promise<IResponse<any>> {
+  get<ResponseType = any>(
+    url: string,
+    options?: IHttpOptions
+  ): Promise<IResponse<ResponseType>> {
     return this.fetch("GET", url, null, options);
   }
 
@@ -73,7 +84,10 @@ export abstract class HttpService {
    * @param url
    * @param body
    */
-  put(url: string, body: any): Promise<IResponse<any>> {
+  put<ResponseType = any>(
+    url: string,
+    body: any
+  ): Promise<IResponse<ResponseType>> {
     return this.fetch("PUT", url, body);
   }
 
@@ -82,7 +96,10 @@ export abstract class HttpService {
    * @param url
    * @param body
    */
-  patch(url: string, body: any): Promise<IResponse<any>> {
+  patch<ResponseType = any>(
+    url: string,
+    body: any
+  ): Promise<IResponse<ResponseType>> {
     return this.fetch("PATCH", url, body);
   }
 
@@ -90,7 +107,7 @@ export abstract class HttpService {
    * Execute a DELETE request
    * @param url
    */
-  delete(url: string): Promise<IResponse<void>> {
+  delete<ResponseType = void>(url: string): Promise<IResponse<ResponseType>> {
     return this.fetch("DELETE", url, null);
   }
 
@@ -103,16 +120,16 @@ export abstract class HttpService {
    * Handle intercepted errors.
    * @param error
    */
-  abstract onRequestError(error: Error): void;
+  abstract onRequestError(error: IResponse<any>): void;
 }
 
 /**
- * An example HttpService.
+ * A basic HttpService used as example and out of the box usage.
  */
 export class SimpleHttpService extends HttpService {
   getHeaders() {
     return {};
   }
 
-  onRequestError(error: Error) {}
+  onRequestError(error: IResponse<any>) {}
 }
