@@ -15,29 +15,28 @@ export abstract class HttpService {
     body: any,
     options?: IHttpOptions
   ): Promise<IResponse<ResponseType>> {
+    const init: RequestInit = {
+      method,
+      body,
+      headers: {}
+    };
+
     // convert the httpOptions to query parameters
     const queryParams = optionsToParams(options || {}).join("&");
+    const requestUrl = [url, queryParams].join("?");
+
+    // set the base headers
+    init.headers = this.getHeaders(requestUrl, init);
 
     // define the type of request
-    let contentType = "multipart/form-data";
-    if (body instanceof FormData === false) {
-      contentType = "application/json";
+    if (typeof body === "object" && body instanceof FormData === false) {
+      init.headers!["Content-Type"] = "application/json";
       body = JSON.stringify(body);
     }
 
     // construct and execute the request
     try {
-      const response: IResponse<ResponseType> = await fetch(
-        [url, queryParams].join("?"),
-        {
-          method,
-          body,
-          headers: {
-            "Content-Type": contentType,
-            ...this.getHeaders()
-          }
-        }
-      );
+      const response: IResponse<ResponseType> = await fetch(requestUrl, init);
 
       // store the actual outcome in response.data
       response.data = await response.json();
@@ -113,8 +112,13 @@ export abstract class HttpService {
 
   /**
    * Return the required headers for a request.
+   * @param url
+   * @param init
    */
-  abstract getHeaders(): { [header: string]: string };
+  abstract getHeaders(
+    url: string,
+    init: RequestInit
+  ): { [header: string]: string };
 
   /**
    * Handle intercepted errors.
@@ -127,7 +131,7 @@ export abstract class HttpService {
  * A basic HttpService used as example and out of the box usage.
  */
 export class SimpleHttpService extends HttpService {
-  getHeaders() {
+  getHeaders(url: string, init: RequestInit) {
     return {};
   }
 
