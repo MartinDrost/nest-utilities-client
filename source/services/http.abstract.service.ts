@@ -39,7 +39,13 @@ export abstract class HttpService {
       const response: IResponse<ResponseType> = await fetch(requestUrl, init);
 
       // store the actual outcome in response.data
-      response.data = await response.json();
+      const dataString = await response.text();
+      try {
+        response.data = JSON.parse(dataString);
+      } catch {
+        // catch empty and string responses
+        response.data = (dataString || undefined) as any;
+      }
 
       // forward error responses
       if (response.status >= 400) {
