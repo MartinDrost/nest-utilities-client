@@ -36,10 +36,10 @@ export abstract class HttpService {
 
     // construct and execute the request
     try {
-      const response: IResponse<ResponseType> = {
-        ...(await fetch(requestUrl, init)),
-        data: undefined as any
-      };
+      const response: IResponse<ResponseType> = (await fetch(
+        requestUrl,
+        init
+      )) as IResponse<ResponseType>;
 
       // store the actual outcome in response.data
       const dataString = await response.text();
