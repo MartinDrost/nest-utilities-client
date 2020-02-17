@@ -31,7 +31,12 @@ export abstract class HttpService {
     // define the type of request
     if (typeof body === "object" && body instanceof FormData === false) {
       init.headers!["Content-Type"] = "application/json";
-      body = JSON.stringify(body);
+      init.body = JSON.stringify(body);
+    }
+
+    // clear GET requests and empty bodies from body data since fetch will error
+    if (method === "GET" || !init.body) {
+      delete init.body;
     }
 
     // construct and execute the request
