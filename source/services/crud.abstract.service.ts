@@ -16,7 +16,7 @@ export abstract class CrudService<IModel> {
    * Create a new instance of the given body.
    * @param body
    */
-  post(body: IModel): Promise<IResponse<IModel>> {
+  post(body: IModel | FormData): Promise<IResponse<IModel>> {
     return this.http.post(this.controller, body);
   }
 
@@ -54,7 +54,7 @@ export abstract class CrudService<IModel> {
    * The model to overwrite is defined with by the (_)id in the body object.
    * @param body
    */
-  put(body: IModel): Promise<IResponse<IModel>> {
+  put(body: IModel | FormData): Promise<IResponse<IModel>> {
     return this.http.put(this.controller, body);
   }
 
@@ -63,7 +63,7 @@ export abstract class CrudService<IModel> {
    * The model to overwrite is defined with by the (_)id in the body object.
    * @param body
    */
-  patch(body: Partial<IModel>): Promise<IResponse<IModel>> {
+  patch(body: Partial<IModel> | FormData): Promise<IResponse<IModel>> {
     return this.http.patch(this.controller, body);
   }
 
