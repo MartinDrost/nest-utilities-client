@@ -38,7 +38,10 @@ export abstract class CrudService<IModel> {
     ids: string[],
     options?: IHttpOptions<IModel>
   ): Promise<IResponse<IModel[]>> {
-    return this.http.get([this.controller, ids.join(",")].join("/"), options);
+    return this.http.get(
+      [this.controller, "many", ids.join(",")].join("/"),
+      options
+    );
   }
 
   /**
