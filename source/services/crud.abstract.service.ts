@@ -9,7 +9,7 @@ export abstract class CrudService<IModel> {
    */
   constructor(
     protected controller: string,
-    private http = new SimpleHttpService()
+    protected http = new SimpleHttpService()
   ) {}
 
   /**
