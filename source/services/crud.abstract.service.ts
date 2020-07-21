@@ -25,7 +25,15 @@ export abstract class CrudService<IModel> {
    * @param id
    * @param options
    */
-  get(id: string, options?: IHttpOptions<IModel>): Promise<IResponse<IModel>> {
+  async get(
+    id: string,
+    options?: IHttpOptions<IModel>
+  ): Promise<IResponse<IModel>> {
+    // default to a 404 if no id was given
+    if (!id) {
+      throw new Response(null, { status: 404 });
+    }
+
     return this.http.get([this.controller, id].join("/"), options);
   }
 
