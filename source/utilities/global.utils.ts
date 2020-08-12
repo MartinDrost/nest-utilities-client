@@ -8,6 +8,10 @@ export const optionsToParams = (options: IHttpOptions) => {
   let queryParams: string[] = [];
   Object.keys(options).forEach((key) => {
     const value = options[key];
+    if (value === undefined) {
+      return;
+    }
+
     if (typeof value === "object") {
       if (Array.isArray(value)) {
         // support array options
