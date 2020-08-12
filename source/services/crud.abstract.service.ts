@@ -1,6 +1,8 @@
 import { IHttpOptions, IResponse } from "../interfaces";
 import { SimpleHttpService } from "./http.abstract.service";
 
+declare const history: History;
+
 export abstract class CrudService<IModel> {
   /**
    * Constructor
