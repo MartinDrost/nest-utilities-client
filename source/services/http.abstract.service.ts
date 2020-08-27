@@ -18,7 +18,7 @@ export abstract class HttpService {
     const init: RequestInit = {
       method,
       body,
-      headers: {}
+      headers: {},
     };
 
     // convert the httpOptions to query parameters
@@ -78,9 +78,10 @@ export abstract class HttpService {
    */
   post<ResponseType = any>(
     url: string,
-    body: any
+    body: any,
+    queryParams?: Record<string, any>
   ): Promise<IResponse<ResponseType>> {
-    return this.fetch("POST", url, body);
+    return this.fetch("POST", url, body, queryParams);
   }
 
   /**
@@ -102,9 +103,10 @@ export abstract class HttpService {
    */
   put<ResponseType = any>(
     url: string,
-    body: any
+    body: any,
+    queryParams?: Record<string, any>
   ): Promise<IResponse<ResponseType>> {
-    return this.fetch("PUT", url, body);
+    return this.fetch("PUT", url, body, queryParams);
   }
 
   /**
@@ -114,17 +116,21 @@ export abstract class HttpService {
    */
   patch<ResponseType = any>(
     url: string,
-    body: any
+    body: any,
+    queryParams?: Record<string, any>
   ): Promise<IResponse<ResponseType>> {
-    return this.fetch("PATCH", url, body);
+    return this.fetch("PATCH", url, body, queryParams);
   }
 
   /**
    * Execute a DELETE request
    * @param url
    */
-  delete<ResponseType = void>(url: string): Promise<IResponse<ResponseType>> {
-    return this.fetch("DELETE", url, null);
+  delete<ResponseType = void>(
+    url: string,
+    queryParams?: Record<string, any>
+  ): Promise<IResponse<ResponseType>> {
+    return this.fetch("DELETE", url, null, queryParams);
   }
 
   /**
