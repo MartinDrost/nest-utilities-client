@@ -1,16 +1,13 @@
-export interface IHttpOptions<Model = any> {
+import { QueryOperators } from "../types/query-operators.type";
+
+export interface IHttpOptions<ModelType = any> {
+  filter?: Record<string | keyof ModelType, Record<QueryOperators, any>>;
+  search?: Record<string | keyof ModelType, Record<QueryOperators, any>>;
   sort?: string[];
-  filter?:
-    | {
-        [key in keyof Model]: string | number | boolean;
-      }
-    | { [key: string]: string | number | boolean };
-  offset?: number;
-  limit?: number;
-  pick?: string[];
-  search?: string;
-  searchScope?: string[];
+  offset?: string;
+  limit?: string;
+  select?: string[];
   populate?: string[];
   distinct?: string;
-  random?: boolean;
+  random?: string;
 }
