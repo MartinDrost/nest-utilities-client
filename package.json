@@ -1,6 +1,6 @@
 {
   "name": "nest-utilities-client",
-  "version": "3.0.0-alpha.1",
+  "version": "3.0.0-alpha.2",
   "description": "Provides a generic HTTP service which interfaces with the nest-utilities package.",
   "main": "distribution/index.js",
   "scripts": {

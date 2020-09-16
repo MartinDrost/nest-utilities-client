@@ -41,8 +41,10 @@ export abstract class CrudService<IModel> {
     ids: string[],
     options: IHttpOptions<IModel> = {}
   ): Promise<IResponse<IModel[]>> {
-    options.filter = { ...options.filter, _id: { $in: ids } };
-    return this.http.get(this.controller, options);
+    return this.http.get(this.controller, {
+      ...options,
+      filter: { ...options.filter, _id: { $in: ids } },
+    });
   }
 
   /**
