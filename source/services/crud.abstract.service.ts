@@ -25,7 +25,10 @@ export abstract class CrudService<IModel> {
    * @param id
    * @param options
    */
-  get(id: string, options?: IHttpOptions<IModel>): Promise<IResponse<IModel>> {
+  get(
+    id: string,
+    options: IHttpOptions<IModel> = {}
+  ): Promise<IResponse<IModel>> {
     return this.http.get([this.controller, id].join("/"), options);
   }
 
@@ -36,19 +39,17 @@ export abstract class CrudService<IModel> {
    */
   getMany(
     ids: string[],
-    options?: IHttpOptions<IModel>
+    options: IHttpOptions<IModel> = {}
   ): Promise<IResponse<IModel[]>> {
-    return this.http.get(
-      [this.controller, "many", ids.join(",")].join("/"),
-      options
-    );
+    options.filter = { ...options.filter, _id: { $in: ids } };
+    return this.http.get(this.controller, options);
   }
 
   /**
    * Get all models.
    * @param options
    */
-  getAll(options?: IHttpOptions<IModel>): Promise<IResponse<IModel[]>> {
+  getAll(options: IHttpOptions<IModel> = {}): Promise<IResponse<IModel[]>> {
     return this.http.get(this.controller, options);
   }
 

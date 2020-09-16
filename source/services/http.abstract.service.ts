@@ -1,5 +1,5 @@
 import { IHttpOptions, IResponse } from "../interfaces";
-import { optionsToParams } from "../utilities";
+import { recordToParams } from "../utilities";
 
 export abstract class HttpService {
   /**
@@ -18,11 +18,11 @@ export abstract class HttpService {
     const init: RequestInit = {
       method,
       body,
-      headers: {}
+      headers: {},
     };
 
     // convert the httpOptions to query parameters
-    const queryParams = optionsToParams(options || {}).join("&");
+    const queryParams = recordToParams(options || {}).join("&");
     const requestUrl = [url, queryParams].join("?");
 
     // set the base headers

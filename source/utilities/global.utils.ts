@@ -1,32 +1,32 @@
-import { IHttpOptions } from "../interfaces";
-
 /**
  * Converts an IHttpOptions object to an array of query parameters
  * @param options
  */
-
-// todo: recursive function
-export const optionsToParams = (options: IHttpOptions) => {
-  let queryParams: string[] = [];
-  Object.keys(options).forEach((key) => {
-    const value = options[key];
-    if (typeof value === "object") {
-      if (Array.isArray(value)) {
-        // support array options
-        queryParams.push(`${key}=${value.join(",")}`);
-      } else {
-        // support subobjects
-        queryParams = queryParams.concat(
-          Object.keys(value).map(
-            (subKey) => `${key}[${subKey}]=${value[subKey]}`
-          )
-        );
-      }
-    } else {
-      // support normal values
-      queryParams.push(`${key}=${value}`);
+export const recordToParams = (
+  record: Record<string, any>,
+  params: string[] = [],
+  path = "",
+  isRoot = true
+) => {
+  for (const [key, value] of Object.entries(record)) {
+    let field = key;
+    if (!isRoot) {
+      field = `[${field}]`;
     }
-  });
+    const _path = path + field;
 
-  return queryParams;
+    if (Array.isArray(value)) {
+      // add each item to the params if the value is an array
+      for (const item of value) {
+        params.push(`${_path}[]=${item}`);
+      }
+    } else if (value && typeof value === "object") {
+      // allow nested fields
+      recordToParams(value, params, _path, false);
+    } else {
+      params.push(`${_path}=${value}`);
+    }
+  }
+
+  return params;
 };

@@ -1,8 +1,8 @@
-import { QueryOperators } from "../types/query-operators.type";
+import { ModelQuery } from "../types/model-query.type";
 
 export interface IHttpOptions<ModelType = any> {
-  filter?: Record<string | keyof ModelType, Record<QueryOperators, any>>;
-  search?: Record<string | keyof ModelType, Record<QueryOperators, any>>;
+  filter?: ModelQuery<ModelType>;
+  search?: ModelQuery<ModelType>;
   sort?: string[];
   offset?: string;
   limit?: string;
