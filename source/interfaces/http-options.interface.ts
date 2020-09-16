@@ -4,10 +4,10 @@ export interface IHttpOptions<ModelType = any> {
   filter?: ModelQuery<ModelType>;
   search?: ModelQuery<ModelType>;
   sort?: string[];
-  offset?: string;
-  limit?: string;
+  offset?: number;
+  limit?: number;
   select?: string[];
   populate?: string[];
   distinct?: string;
-  random?: string;
+  random?: boolean;
 }
