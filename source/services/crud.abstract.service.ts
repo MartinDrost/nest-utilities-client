@@ -16,8 +16,11 @@ export abstract class CrudService<IModel> {
    * Create a new instance of the given body.
    * @param body
    */
-  post(body: IModel | FormData): Promise<IResponse<IModel>> {
-    return this.http.post(this.controller, body);
+  post(
+    body: IModel | FormData,
+    options: IHttpOptions<IModel> = {}
+  ): Promise<IResponse<IModel>> {
+    return this.http.post(this.controller, body, options);
   }
 
   /**
@@ -60,8 +63,11 @@ export abstract class CrudService<IModel> {
    * The model to overwrite is defined with by the (_)id in the body object.
    * @param body
    */
-  put(body: IModel | FormData): Promise<IResponse<IModel>> {
-    return this.http.put(this.controller, body);
+  put(
+    body: IModel | FormData,
+    options: IHttpOptions<IModel> = {}
+  ): Promise<IResponse<IModel>> {
+    return this.http.put(this.controller, body, options);
   }
 
   /**
@@ -69,15 +75,21 @@ export abstract class CrudService<IModel> {
    * The model to overwrite is defined with by the (_)id in the body object.
    * @param body
    */
-  patch(body: Partial<IModel> | FormData): Promise<IResponse<IModel>> {
-    return this.http.patch(this.controller, body);
+  patch(
+    body: Partial<IModel> | FormData,
+    options: IHttpOptions<IModel> = {}
+  ): Promise<IResponse<IModel>> {
+    return this.http.patch(this.controller, body, options);
   }
 
   /**
    * Delete a model by its id.
    * @param id
    */
-  delete(id: string): Promise<IResponse<void>> {
-    return this.http.delete([this.controller, id].join("/"));
+  delete(
+    id: string,
+    options: IHttpOptions<IModel> = {}
+  ): Promise<IResponse<void>> {
+    return this.http.delete([this.controller, id].join("/"), options);
   }
 }
