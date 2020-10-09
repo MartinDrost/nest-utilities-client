@@ -7,8 +7,8 @@ export const recordToParams = (
   params: string[] = [],
   path = "",
   isRoot = true
-) => {
-  for (const [key, value] of Object.entries(record)) {
+): string[] => {
+  for (let [key, value] of Object.entries(record)) {
     let field = key;
     if (!isRoot) {
       field = `[${field}]`;
@@ -17,6 +17,7 @@ export const recordToParams = (
 
     if (Array.isArray(value)) {
       // add each item to the params if the value is an array
+      value = [...value].sort();
       for (const item of value) {
         params.push(`${_path}[]=${item}`);
       }
@@ -28,5 +29,5 @@ export const recordToParams = (
     }
   }
 
-  return params;
+  return params.sort();
 };
