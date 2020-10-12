@@ -8,7 +8,7 @@ export abstract class CrudService<IModel> {
    * @param http An HttpService implementation which will be used
    */
   constructor(
-    protected controller: string,
+    public controller: string,
     protected http = new SimpleHttpService()
   ) {}
 
