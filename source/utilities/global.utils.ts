@@ -19,13 +19,13 @@ export const recordToParams = (
       // add each item to the params if the value is an array
       value = [...value].sort();
       for (const item of value) {
-        params.push(`${_path}[]=${item}`);
+        params.push(`${_path}[]=${encodeURIComponent(item)}`);
       }
     } else if (value && typeof value === "object") {
       // allow nested fields
       recordToParams(value, params, _path, false);
     } else {
-      params.push(`${_path}=${value}`);
+      params.push(`${_path}=${encodeURIComponent(value)}`);
     }
   }
 
