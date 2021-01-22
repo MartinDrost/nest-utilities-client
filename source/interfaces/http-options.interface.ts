@@ -10,4 +10,6 @@ export interface IHttpOptions<ModelType = any> {
   populate?: string[];
   distinct?: string;
   random?: boolean;
+
+  [key: string]: any;
 }
