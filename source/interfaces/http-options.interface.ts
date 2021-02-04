@@ -1,13 +1,14 @@
 import { ModelQuery } from "../types/model-query.type";
+import { IPopulateOptions } from "./populate-options.interface";
 
 export interface IHttpOptions<ModelType = any> {
-  filter?: ModelQuery<ModelType>;
+  match?: ModelQuery<ModelType>;
   search?: ModelQuery<ModelType>;
   sort?: string[];
   offset?: number;
   limit?: number;
   select?: string[];
-  populate?: string[];
+  populate?: (string | IPopulateOptions)[];
   distinct?: string;
   random?: boolean;
 

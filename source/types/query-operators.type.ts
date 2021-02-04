@@ -9,4 +9,9 @@ export type QueryOperators =
   | "$in"
   | "$nin"
   | "$exists"
-  | "$size";
+  | "$size"
+  | "$and"
+  | "$or"
+  | "$not"
+  | "$regex"
+  | "$options";
