@@ -3,7 +3,6 @@ import { IPopulateOptions } from "./populate-options.interface";
 
 export interface IHttpOptions<ModelType = any> {
   match?: ModelQuery<ModelType>;
-  search?: ModelQuery<ModelType>;
   sort?: string[];
   offset?: number;
   limit?: number;

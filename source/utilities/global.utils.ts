@@ -18,11 +18,12 @@ export const recordToParams = (
     if (Array.isArray(value)) {
       // add each item to the params if the value is an array
       value = [...value].sort();
-      for (const item of value) {
-        if (typeof value === "object") {
-          recordToParams(value, params, _path, false);
+      for (let i = 0; i < value.length; i++) {
+        const item = value[i];
+        if (typeof item === "object") {
+          recordToParams(item, params, _path + `[${i}]`, false);
         } else {
-          params.push(`${_path}[]=${encodeURIComponent(item)}`);
+          params.push(`${_path}[${i}]=${encodeURIComponent(item)}`);
         }
       }
     } else if (value && typeof value === "object") {
