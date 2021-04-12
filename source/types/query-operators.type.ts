@@ -14,4 +14,5 @@ export type QueryOperators =
   | "$or"
   | "$not"
   | "$regex"
-  | "$options";
+  | "$options"
+  | "$isNull";

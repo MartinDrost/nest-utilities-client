@@ -80,7 +80,7 @@ export abstract class HttpService {
     url: string,
     body: any,
     options?: IHttpOptions
-  ): Promise<IResponse<ResponseType>> {
+  ): Promise<IResponse<ResponseType, any>> {
     return this.fetch("POST", url, body, options);
   }
 
@@ -92,7 +92,7 @@ export abstract class HttpService {
   get<ResponseType = any>(
     url: string,
     options?: IHttpOptions
-  ): Promise<IResponse<ResponseType>> {
+  ): Promise<IResponse<ResponseType, any>> {
     return this.fetch("GET", url, null, options);
   }
 
@@ -105,7 +105,7 @@ export abstract class HttpService {
     url: string,
     body: any,
     options?: IHttpOptions
-  ): Promise<IResponse<ResponseType>> {
+  ): Promise<IResponse<ResponseType, any>> {
     return this.fetch("PUT", url, body, options);
   }
 
@@ -118,7 +118,7 @@ export abstract class HttpService {
     url: string,
     body: any,
     options?: IHttpOptions
-  ): Promise<IResponse<ResponseType>> {
+  ): Promise<IResponse<ResponseType, any>> {
     return this.fetch("PATCH", url, body, options);
   }
 
@@ -126,10 +126,10 @@ export abstract class HttpService {
    * Execute a DELETE request
    * @param url
    */
-  delete<ResponseType = void>(
+  delete<ResponseType = any>(
     url: string,
     options?: IHttpOptions
-  ): Promise<IResponse<ResponseType>> {
+  ): Promise<IResponse<ResponseType, any>> {
     return this.fetch("DELETE", url, null, options);
   }
 
