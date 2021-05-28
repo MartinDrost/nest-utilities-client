@@ -53,10 +53,24 @@ export abstract class CrudService<ModelType, HydratedType = null> {
     ids: string[],
     options: IHttpOptions<ModelType> = {}
   ): Promise<IResponse<ModelType[], HydratedType[]>> {
-    const response = await this.http.get(this.controller, {
+    const response = await this.http.get<any[]>(this.controller, {
       ...options,
-      filter: { ...options.filter, _id: { $in: ids } },
+      match: { ...options.match, _id: { $in: ids } },
     });
+
+    // sort the results in the order of the ids array
+    const resultMap: Record<string, ModelType> = response.data.reduce(
+      (prev, curr) => {
+        prev[curr._id] = curr;
+        return prev;
+      },
+      {}
+    );
+    response.data = response.data
+      .map(({ _id }) => resultMap[_id])
+      .filter(Boolean);
+
+    // hydrate the responses
     response.hydrated = await Promise.all(
       response.data.map((model) => this.hydrate(model))
     );
