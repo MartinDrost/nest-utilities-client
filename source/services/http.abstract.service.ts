@@ -26,7 +26,7 @@ export abstract class HttpService {
     const requestUrl = [url, queryParams].join("?");
 
     // set the base headers
-    init.headers = this.getHeaders(requestUrl, init);
+    init.headers = await this.getHeaders(requestUrl, init);
 
     // clear GET requests and empty bodies from body data since fetch will error
     if (method === "GET" || !init.body) {
@@ -65,7 +65,7 @@ export abstract class HttpService {
 
       return response;
     } catch (error) {
-      this.onRequestError(error);
+      await this.onRequestError(error);
 
       throw error;
     }
@@ -141,13 +141,13 @@ export abstract class HttpService {
   abstract getHeaders(
     url: string,
     init: RequestInit
-  ): { [header: string]: string };
+  ): Record<string, string> | Promise<Record<string, string>>;
 
   /**
    * Handle intercepted errors.
    * @param error
    */
-  abstract onRequestError(error: IResponse<any>): void;
+  abstract onRequestError(error: IResponse<any>): void | Promise<void>;
 }
 
 /**
