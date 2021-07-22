@@ -66,9 +66,7 @@ export abstract class CrudService<ModelType, HydratedType = null> {
       },
       {}
     );
-    response.data = response.data
-      .map(({ _id }) => resultMap[_id])
-      .filter(Boolean);
+    response.data = ids.map((_id) => resultMap[_id]).filter(Boolean);
 
     // hydrate the responses
     response.hydrated = await Promise.all(
