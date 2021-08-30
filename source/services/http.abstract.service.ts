@@ -1,5 +1,5 @@
 import { IHttpOptions, IResponse } from "../interfaces";
-import { optionsToParams } from "../utilities";
+import { recordToParams } from "../utilities";
 
 export abstract class HttpService {
   /**
@@ -22,11 +22,11 @@ export abstract class HttpService {
     };
 
     // convert the httpOptions to query parameters
-    const queryParams = optionsToParams(options || {}).join("&");
+    const queryParams = recordToParams(options || {}).join("&");
     const requestUrl = [url, queryParams].join("?");
 
     // set the base headers
-    init.headers = this.getHeaders(requestUrl, init);
+    init.headers = await this.getHeaders(requestUrl, init);
 
     // clear GET requests and empty bodies from body data since fetch will error
     if (method === "GET" || !init.body) {
@@ -65,7 +65,7 @@ export abstract class HttpService {
 
       return response;
     } catch (error) {
-      this.onRequestError(error);
+      await this.onRequestError(error);
 
       throw error;
     }
@@ -79,9 +79,9 @@ export abstract class HttpService {
   post<ResponseType = any>(
     url: string,
     body: any,
-    queryParams?: Record<string, any>
-  ): Promise<IResponse<ResponseType>> {
-    return this.fetch("POST", url, body, queryParams);
+    options?: IHttpOptions
+  ): Promise<IResponse<ResponseType, any>> {
+    return this.fetch("POST", url, body, options);
   }
 
   /**
@@ -92,7 +92,7 @@ export abstract class HttpService {
   get<ResponseType = any>(
     url: string,
     options?: IHttpOptions
-  ): Promise<IResponse<ResponseType>> {
+  ): Promise<IResponse<ResponseType, any>> {
     return this.fetch("GET", url, null, options);
   }
 
@@ -104,9 +104,9 @@ export abstract class HttpService {
   put<ResponseType = any>(
     url: string,
     body: any,
-    queryParams?: Record<string, any>
-  ): Promise<IResponse<ResponseType>> {
-    return this.fetch("PUT", url, body, queryParams);
+    options?: IHttpOptions
+  ): Promise<IResponse<ResponseType, any>> {
+    return this.fetch("PUT", url, body, options);
   }
 
   /**
@@ -117,20 +117,20 @@ export abstract class HttpService {
   patch<ResponseType = any>(
     url: string,
     body: any,
-    queryParams?: Record<string, any>
-  ): Promise<IResponse<ResponseType>> {
-    return this.fetch("PATCH", url, body, queryParams);
+    options?: IHttpOptions
+  ): Promise<IResponse<ResponseType, any>> {
+    return this.fetch("PATCH", url, body, options);
   }
 
   /**
    * Execute a DELETE request
    * @param url
    */
-  delete<ResponseType = void>(
+  delete<ResponseType = any>(
     url: string,
-    queryParams?: Record<string, any>
-  ): Promise<IResponse<ResponseType>> {
-    return this.fetch("DELETE", url, null, queryParams);
+    options?: IHttpOptions
+  ): Promise<IResponse<ResponseType, any>> {
+    return this.fetch("DELETE", url, null, options);
   }
 
   /**
@@ -141,13 +141,13 @@ export abstract class HttpService {
   abstract getHeaders(
     url: string,
     init: RequestInit
-  ): { [header: string]: string };
+  ): Record<string, string> | Promise<Record<string, string>>;
 
   /**
    * Handle intercepted errors.
    * @param error
    */
-  abstract onRequestError(error: IResponse<any>): void;
+  abstract onRequestError(error: IResponse<any>): void | Promise<void>;
 }
 
 /**

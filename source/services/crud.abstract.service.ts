@@ -1,16 +1,14 @@
 import { IHttpOptions, IResponse } from "../interfaces";
 import { SimpleHttpService } from "./http.abstract.service";
 
-declare const history: History;
-
-export abstract class CrudService<IModel> {
+export abstract class CrudService<ModelType, HydratedType = null> {
   /**
    * Constructor
    * @param controller The url pointing to the services' controller
    * @param http An HttpService implementation which will be used
    */
   constructor(
-    protected controller: string,
+    public controller: string,
     protected http = new SimpleHttpService()
   ) {}
 
@@ -18,11 +16,14 @@ export abstract class CrudService<IModel> {
    * Create a new instance of the given body.
    * @param body
    */
-  post(
-    body: IModel | FormData,
-    queryParams?: Record<string, any>
-  ): Promise<IResponse<IModel>> {
-    return this.http.post(this.controller, body, queryParams);
+  async post(
+    body: ModelType | FormData,
+    options: IHttpOptions<ModelType> = {}
+  ): Promise<IResponse<ModelType, HydratedType>> {
+    const response = await this.http.post(this.controller, body, options);
+    response.hydrated = await this.hydrate(response.data);
+
+    return response;
   }
 
   /**
@@ -32,14 +33,15 @@ export abstract class CrudService<IModel> {
    */
   async get(
     id: string,
-    options?: IHttpOptions<IModel>
-  ): Promise<IResponse<IModel>> {
-    // default to a 404 if no id was given
-    if (!id) {
-      throw new Response(null, { status: 404 });
-    }
+    options: IHttpOptions<ModelType> = {}
+  ): Promise<IResponse<ModelType, HydratedType>> {
+    const response = await this.http.get(
+      [this.controller, id].join("/"),
+      options
+    );
+    response.hydrated = await this.hydrate(response.data);
 
-    return this.http.get([this.controller, id].join("/"), options);
+    return response;
   }
 
   /**
@@ -47,22 +49,46 @@ export abstract class CrudService<IModel> {
    * @param ids
    * @param options
    */
-  getMany(
+  async getMany(
     ids: string[],
-    options?: IHttpOptions<IModel>
-  ): Promise<IResponse<IModel[]>> {
-    return this.http.get(
-      [this.controller, "many", ids.join(",")].join("/"),
-      options
+    options: IHttpOptions<ModelType> = {}
+  ): Promise<IResponse<ModelType[], HydratedType[]>> {
+    const response = await this.http.get<any[]>(this.controller, {
+      ...options,
+      match: { ...options.match, _id: { $in: ids } },
+    });
+
+    // sort the results in the order of the ids array
+    const resultMap: Record<string, ModelType> = response.data.reduce(
+      (prev, curr) => {
+        prev[curr._id] = curr;
+        return prev;
+      },
+      {}
     );
+    response.data = ids.map((_id) => resultMap[_id]).filter(Boolean);
+
+    // hydrate the responses
+    response.hydrated = await Promise.all(
+      response.data.map((model) => this.hydrate(model))
+    );
+
+    return response;
   }
 
   /**
    * Get all models.
    * @param options
    */
-  getAll(options?: IHttpOptions<IModel>): Promise<IResponse<IModel[]>> {
-    return this.http.get(this.controller, options);
+  async getAll(
+    options: IHttpOptions<ModelType> = {}
+  ): Promise<IResponse<ModelType[], HydratedType[]>> {
+    const response = await this.http.get(this.controller, options);
+    response.hydrated = await Promise.all(
+      response.data.map((model) => this.hydrate(model))
+    );
+
+    return response;
   }
 
   /**
@@ -70,11 +96,14 @@ export abstract class CrudService<IModel> {
    * The model to overwrite is defined with by the (_)id in the body object.
    * @param body
    */
-  put(
-    body: IModel | FormData,
-    queryParams?: Record<string, any>
-  ): Promise<IResponse<IModel>> {
-    return this.http.put(this.controller, body, queryParams);
+  async put(
+    body: ModelType | FormData,
+    options: IHttpOptions<ModelType> = {}
+  ): Promise<IResponse<ModelType, HydratedType>> {
+    const response = await this.http.put(this.controller, body, options);
+    response.hydrated = await this.hydrate(response.data);
+
+    return response;
   }
 
   /**
@@ -82,21 +111,43 @@ export abstract class CrudService<IModel> {
    * The model to overwrite is defined with by the (_)id in the body object.
    * @param body
    */
-  patch(
-    body: Partial<IModel> | FormData,
-    queryParams?: Record<string, any>
-  ): Promise<IResponse<IModel>> {
-    return this.http.patch(this.controller, body, queryParams);
+  async patch(
+    body: Partial<ModelType> | FormData,
+    options: IHttpOptions<ModelType> = {}
+  ): Promise<IResponse<ModelType, HydratedType>> {
+    const response = await this.http.patch(this.controller, body, options);
+    response.hydrated = await this.hydrate(response.data);
+
+    return response;
   }
 
   /**
    * Delete a model by its id.
    * @param id
    */
-  delete(
+  async delete(
     id: string,
-    queryParams?: Record<string, any>
-  ): Promise<IResponse<void>> {
-    return this.http.delete([this.controller, id, queryParams].join("/"));
+    options: IHttpOptions<ModelType> = {}
+  ): Promise<IResponse<ModelType, HydratedType>> {
+    const response = await this.http.delete(
+      [this.controller, id].join("/"),
+      options
+    );
+    response.hydrated = await this.hydrate(response.data);
+
+    return response;
+  }
+
+  /**
+   * Overridable method used to hydrate response objects. This method is
+   * called after the basic CRUD methods by default and can be implemented in
+   * custom methods.
+   *
+   * Example scenario: Transforming JSON responses to class instances
+   * @param model
+   * @returns
+   */
+  async hydrate(model: ModelType): Promise<HydratedType> {
+    return null as any;
   }
 }

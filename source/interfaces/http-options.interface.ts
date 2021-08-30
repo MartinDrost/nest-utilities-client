@@ -1,18 +1,15 @@
-export interface IHttpOptions<Model = any> {
+import { ModelQuery } from "../types/model-query.type";
+import { IPopulateOptions } from "./populate-options.interface";
+
+export interface IHttpOptions<ModelType = any> {
+  match?: ModelQuery<ModelType>;
   sort?: string[];
-  filter?:
-    | {
-        [key in keyof Model]: string | number | boolean;
-      }
-    | { [key: string]: string | number | boolean };
   offset?: number;
   limit?: number;
-  pick?: string[];
-  search?: string;
-  searchScope?: string[];
-  populate?: string[];
+  select?: string[];
+  populate?: (string | IPopulateOptions)[];
   distinct?: string;
   random?: boolean;
 
-  [customParam: string]: any;
+  [key: string]: any;
 }
