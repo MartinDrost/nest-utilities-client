@@ -17,7 +17,6 @@ export const recordToParams = (
 
     if (Array.isArray(value)) {
       // add each item to the params if the value is an array
-      value = [...value].sort();
       for (let i = 0; i < value.length; i++) {
         const item = value[i];
         if (typeof item === "object") {
