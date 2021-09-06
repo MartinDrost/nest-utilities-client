@@ -1,3 +1,1 @@
-export interface INuHeaders extends Headers {
-  "X-total-count"?: number;
-}
+export interface INuHeaders extends Headers {}
