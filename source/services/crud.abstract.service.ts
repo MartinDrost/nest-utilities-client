@@ -1,4 +1,5 @@
 import { IHttpOptions, IResponse } from "../interfaces";
+import { ManyPayload } from "../types";
 import { SimpleHttpService } from "./http.abstract.service";
 
 export abstract class CrudService<ModelType, HydratedType = null> {
@@ -14,7 +15,7 @@ export abstract class CrudService<ModelType, HydratedType = null> {
 
   /**
    * Create a new instance of the given body.
-   * @param body
+   * @param body the object which you want to create
    */
   async post(
     body: ModelType | FormData,
@@ -27,8 +28,28 @@ export abstract class CrudService<ModelType, HydratedType = null> {
   }
 
   /**
+   * Create a new instances of the given bodies.
+   * @param body the objects which you want to create
+   */
+  async postMany(
+    body: ManyPayload<ModelType> | FormData,
+    options: IHttpOptions<ModelType> = {}
+  ): Promise<IResponse<ModelType[], HydratedType[]>> {
+    const response = await this.http.post(
+      [this.controller, "many"].join("/"),
+      body,
+      options
+    );
+    response.hydrated = await Promise.all(
+      response.data.map((model) => this.hydrate(model))
+    );
+
+    return response;
+  }
+
+  /**
    * Get a model by its id.
-   * @param id
+   * @param id the id of the model to get
    * @param options
    */
   async get(
@@ -46,7 +67,7 @@ export abstract class CrudService<ModelType, HydratedType = null> {
 
   /**
    * Get multiple models by their id.
-   * @param ids
+   * @param ids the ids of the models to get
    * @param options
    */
   async getMany(
@@ -94,7 +115,7 @@ export abstract class CrudService<ModelType, HydratedType = null> {
   /**
    * Overwrite the instance of the given model with the provided body.
    * The model to overwrite is defined with by the (_)id in the body object.
-   * @param body
+   * @param body the object which you want to overwrite
    */
   async put(
     body: ModelType | FormData,
@@ -107,9 +128,30 @@ export abstract class CrudService<ModelType, HydratedType = null> {
   }
 
   /**
+   * Overwrite the instances of the given models with the provided bodies.
+   * The models to overwrite are defined with by the (_)id in the body objects.
+   * @param body the objects which you want to overwrite
+   */
+  async putMany(
+    body: ManyPayload<ModelType> | FormData,
+    options: IHttpOptions<ModelType> = {}
+  ): Promise<IResponse<ModelType[], HydratedType[]>> {
+    const response = await this.http.put(
+      [this.controller, "many"].join("/"),
+      body,
+      options
+    );
+    response.hydrated = await Promise.all(
+      response.data.map((model) => this.hydrate(model))
+    );
+
+    return response;
+  }
+
+  /**
    * Merge the provided body with the instance of the given model in the DB.
    * The model to overwrite is defined with by the (_)id in the body object.
-   * @param body
+   * @param body the object which you want to use to merge with the model
    */
   async patch(
     body: Partial<ModelType> | FormData,
@@ -122,8 +164,29 @@ export abstract class CrudService<ModelType, HydratedType = null> {
   }
 
   /**
+   * Merge the provided bodies with the instances of the given models in the DB.
+   * The models to overwrite are defined with by the (_)id in the body objects.
+   * @param body the objects which you want to use to merge with the models
+   */
+  async patchMany(
+    body: ManyPayload<Partial<ModelType>> | FormData,
+    options: IHttpOptions<ModelType> = {}
+  ): Promise<IResponse<ModelType[], HydratedType[]>> {
+    const response = await this.http.patch(
+      [this.controller, "many"].join("/"),
+      body,
+      options
+    );
+    response.hydrated = await Promise.all(
+      response.data.map((model) => this.hydrate(model))
+    );
+
+    return response;
+  }
+
+  /**
    * Delete a model by its id.
-   * @param id
+   * @param id the id of the model to delete
    */
   async delete(
     id: string,

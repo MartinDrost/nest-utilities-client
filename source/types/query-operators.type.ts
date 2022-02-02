@@ -1,3 +1,6 @@
+/**
+ * Supported mongodb query operators.
+ */
 export type QueryOperators =
   | "$eq"
   | "$ne"
