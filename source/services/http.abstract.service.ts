@@ -9,7 +9,7 @@ export abstract class HttpService {
    * @param body
    * @param options
    */
-  private async fetch<ResponseType = any>(
+  protected async fetch<ResponseType = any>(
     method: string,
     url: string,
     body: any,
