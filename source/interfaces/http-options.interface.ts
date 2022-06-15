@@ -57,7 +57,7 @@ export interface IHttpOptions<ModelType = any> {
    * @example [{ path: 'school', populate: [{ path: 'students' }] }]
    * @see https://mongoosejs.com/docs/populate.html
    */
-  populate?: string[] | IPopulateOptions[];
+  populate?: (IPopulateOptions | string)[];
 
   /**
    * Specifies the field which you only want distinct (unique) values for.
