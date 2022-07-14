@@ -60,6 +60,14 @@ export interface IHttpOptions<ModelType = any> {
   populate?: (IPopulateOptions | string)[];
 
   /**
+   * Allows you to define an $addFields stage in the mongodb aggregation pipeline.
+   * These fields can be used in the other stages of the pipeline such as match and sort.
+   * @example { $addFields: { total: { $sum: ["$price", "$tax"] } } }
+   * @see https://docs.mongodb.com/manual/reference/operator/aggregation/addFields/
+   */
+  addFields?: Record<string, any>;
+
+  /**
    * Specifies the field which you only want distinct (unique) values for.
    * Inspired by SQL distinct.
    * @example "firstName"
