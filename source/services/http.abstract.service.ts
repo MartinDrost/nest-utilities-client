@@ -65,7 +65,7 @@ export abstract class HttpService {
 
       return response;
     } catch (error) {
-      await this.onRequestError(error);
+      await this.onRequestError(error as IResponse<any>);
 
       throw error;
     }

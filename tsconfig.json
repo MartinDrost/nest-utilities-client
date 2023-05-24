@@ -8,8 +8,8 @@
     "noImplicitAny": false,
     "esModuleInterop": true,
     "outDir": "distribution",
-    "sourceMap": true,
-    "declarationMap": true
+    "sourceMap": false,
+    "declarationMap": false
   },
   "include": ["source"],
   "exclude": ["node_modules"]
