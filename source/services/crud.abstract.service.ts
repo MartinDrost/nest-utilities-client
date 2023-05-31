@@ -116,7 +116,7 @@ export abstract class CrudService<ModelType, HydratedType = null> {
    * Count the number of results
    * @param options
    */
-  count = async (options: IHttpOptions<ModelType> = {}): Promise<Number> => {
+  count = async (options: IHttpOptions<ModelType> = {}): Promise<number> => {
     const response = await this.http.get(this.controller, {
       ...options,
       limit: 1,
