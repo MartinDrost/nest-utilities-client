@@ -113,6 +113,19 @@ export abstract class CrudService<ModelType, HydratedType = null> {
   };
 
   /**
+   * Count the number of results
+   * @param options
+   */
+  count = async (options: IHttpOptions<ModelType> = {}): Promise<Number> => {
+    const response = await this.http.get(this.controller, {
+      ...options,
+      limit: 1,
+    });
+
+    return +(response.headers.get("X-Total-Count") ?? 0);
+  };
+
+  /**
    * Overwrite the instance of the given model with the provided body.
    * The model to overwrite is defined with by the (_)id in the body object.
    * @param body the object which you want to overwrite
