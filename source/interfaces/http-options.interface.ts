@@ -85,6 +85,14 @@ export interface IHttpOptions<ModelType = any> {
   random?: boolean;
 
   /**
+   * Defines whether the options should be sent as query parameters or as request headers.
+   * Setting this to true will send the options as the "x-query-options" header.
+   * When the header is set, all other query parameters will be ignored.
+   * @default false
+   */
+  useRequestHeaders?: boolean;
+
+  /**
    * All other fields which are not explicitly defined will be added as query parameter
    * but have no out-of-the-box functionality.
    */

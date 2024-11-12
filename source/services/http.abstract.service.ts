@@ -2,6 +2,8 @@ import { IHttpOptions, IResponse } from "../interfaces";
 import { recordToParams } from "../utilities";
 
 export abstract class HttpService {
+  public static useRequestHeadersOverride: Boolean | null = null;
+
   /**
    * Execute a fetch request
    * @param method
@@ -22,11 +24,27 @@ export abstract class HttpService {
     };
 
     // convert the httpOptions to query parameters
-    const queryParams = recordToParams(options || {}).join("&");
-    const requestUrl = [url, queryParams].join("?");
+    let requestUrl = url;
+    if (
+      !options?.useRequestHeaders ||
+      HttpService.useRequestHeadersOverride === false
+    ) {
+      requestUrl += "?" + recordToParams(options || {}).join("&");
+    }
 
     // set the base headers
     init.headers = await this.getHeaders(requestUrl, init);
+
+    if (
+      options?.useRequestHeaders ||
+      HttpService.useRequestHeadersOverride === true
+    ) {
+      // set the options as a header
+      init.headers["x-query-options"] = JSON.stringify({
+        ...options,
+        useRequestHeaders: undefined,
+      });
+    }
 
     // clear GET requests and empty bodies from body data since fetch will error
     if (method === "GET" || !init.body) {
@@ -38,7 +56,7 @@ export abstract class HttpService {
       typeof init.body === "object" &&
       init.body instanceof FormData === false
     ) {
-      init.headers!["Content-Type"] = "application/json";
+      init.headers["Content-Type"] = "application/json";
       init.body = JSON.stringify(init.body);
     }
 
