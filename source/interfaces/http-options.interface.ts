@@ -93,6 +93,16 @@ export interface IHttpOptions<ModelType = any> {
   useRequestHeaders?: boolean;
 
   /**
+   * Specifies whether you want to include the count of total matching documents
+   * in the response. This is useful for pagination where you want to know the
+   * total number of documents available.
+   *
+   * The count will be available in the `X-Total-Count` header of the response.
+   * @example true
+   */
+  includeCount?: string | boolean;
+
+  /**
    * All other fields which are not explicitly defined will be added as query parameter
    * but have no out-of-the-box functionality.
    */
